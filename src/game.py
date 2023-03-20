@@ -2,9 +2,9 @@ from board import Board
 from player import Player
 
 class Game:
-    def __init__(self, board_size, game_mode, player1_type, player2_type):
+    def __init__(self, board_size, game_type, player1_type, player2_type):
         self.board = Board(board_size)
-        self.game_mode = game_mode
+        self.game_type = game_type
         self.players = [
             Player(1, player1_type, 'S'),
             Player(2, player2_type, 'O')
