@@ -11,10 +11,23 @@ class Board:
             self.board[row][col] = move
             return True
         return False
-    
+
     def __str__(self):
         board_str = []
         for row in self.board:
             row_str = ' '.join([cell if cell != '' else '.' for cell in row]).strip()
             board_str.append(row_str)
         return '\n'.join(board_str)
+    
+    def set_value(self, row, col, value):
+        self.cells[row][col] = value
+
+    def get_value(self, row, col):
+        return self.cells[row][col]
+
+    def is_full(self):
+        for row in range(self.size):
+            for col in range(self.size):
+                if self.cells[row][col] == ' ':
+                    return False
+        return True

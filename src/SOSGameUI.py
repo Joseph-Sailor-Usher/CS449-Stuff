@@ -15,13 +15,14 @@ class SOSGameUI(tk.Tk):
         self.frame.destroy()
         self.frame = tk.Frame(self)
         self.frame.pack(fill=tk.BOTH, expand=True)
-        
+        self.game_type_var = tk.StringVar(value=self.game.game_type)
+
         for widget in self.frame.winfo_children():
             widget.destroy()
 
         self.create_board_buttons()
         self.create_status_label()
-        self.create_game_type_checkboxes()
+        self.create_game_type_widgets()
         self.create_board_size_entry()
         self.update_window_size()
 
@@ -30,16 +31,17 @@ class SOSGameUI(tk.Tk):
         self.status_label = tk.Label(self.frame, text="Player 1's Turn")
         self.status_label.grid(row=self.game.board.size, column=0, columnspan=self.game.board.size)
 
-    def create_game_type_checkboxes(self):
-        self.game_type = tk.StringVar()
-        self.game_type.set("simple")
-        simple_game_type_checkbox = tk.Checkbutton(self.frame, text="Simple", variable=self.game_type,
-                                                    onvalue="simple", command=self.update_game_type)
-        simple_game_type_checkbox.grid(row=self.game.board.size + 2, column=0, padx=5, pady=5, sticky=tk.W)
-        general_game_type_checkbox = tk.Checkbutton(self.frame, text="General", variable=self.game_type,
-                                                    onvalue="general", command=self.update_game_type)
-        general_game_type_checkbox.grid(row=self.game.board.size + 2, column=1, padx=5, pady=5, sticky=tk.W)
-
+    def create_game_type_widgets(self):
+        self.game_type_label = tk.Label(self.frame, text="Game Type:")
+        self.game_type_label.grid(row=self.game.board.size + 2, column=0, sticky=tk.W)
+        self.game_type_var = tk.StringVar()
+        self.game_type_var.set(self.game.game_type)
+        simple_game_type_radiobutton = tk.Radiobutton(self.frame, text="Simple", variable=self.game_type_var,
+                                                      value="simple", command=lambda: self.game.set_game_type("simple"))
+        simple_game_type_radiobutton.grid(row=self.game.board.size + 2, column=1, padx=5, pady=5, sticky=tk.W)
+        general_game_type_radiobutton = tk.Radiobutton(self.frame, text="General", variable=self.game_type_var,
+                                                      value="general", command=lambda: self.game.set_game_type("general"))
+        general_game_type_radiobutton.grid(row=self.game.board.size + 2, column=2, padx=5, pady=5, sticky=tk.W)
 
     def create_board_size_entry(self):
         self.board_size_label = tk.Label(self.frame, text="Board Size:")
@@ -48,7 +50,7 @@ class SOSGameUI(tk.Tk):
         self.board_size_entry.grid(row=self.game.board.size + 1, column=1)
         self.board_size_entry.insert(0, str(self.game.board.size))
 
-        self.board_size_button = tk.Button(self.frame, text="Update", command=self.update_board_size)
+        self.board_size_button = tk.Button(self.frame, text="Play", command=self.update_board_size)
         self.board_size_button.grid(row=self.game.board.size + 1, column=2, padx=5, pady=5, sticky=tk.W)
 
     def create_board_buttons(self):
@@ -61,21 +63,22 @@ class SOSGameUI(tk.Tk):
         self.status_label.grid(row=self.game.board.size, column=0, columnspan=self.game.board.size)
 
     def button_click(self, row, col):
-        # Implement the logic for handling a button click
-        pass
+        current_player = self.game.get_current_player()
+        if self.game.make_move(row, col):
+            board_value = self.game.board.get_value(row, col)
+            button = self.frame.grid_slaves(row=row, column=col)[0]
+            button.config(text=board_value)
+            if self.game.is_finished():
+                self.status_label.config(text=f"{current_player.player_type} player {current_player.player_id} wins!")
+            else:
+                self.game.switch_turn()
+            self.status_label.config(text=f"{self.game.get_current_player().player_type} player {self.game.get_current_player().player_id}'s turn")
 
     def update_window_size(self):
         padding = 50
         width = self.game.board.size * 50 + padding
         height = self.game.board.size * 50 + padding + 100
         self.frame.config(width=width, height=height)
-
-    def update_game_type(self):
-        new_game_type = self.game_type.get()
-        if new_game_type != self.game.game_type:
-            self.game.game_type = new_game_type
-            print(f"Game type changed to {new_game_type}.")
-
 
     def update_board_size(self):
         try:
@@ -88,12 +91,3 @@ class SOSGameUI(tk.Tk):
                 print("Board size must be between 3 and 10.")
         except ValueError:
             print("Invalid board size. Please enter a number between 3 and 10.")
-
-
-def main():
-    game = Game(3, "simple", "human", "ai")
-    app = SOSGameUI(game)
-    app.mainloop()
-
-if __name__ == "__main__":
-    main()

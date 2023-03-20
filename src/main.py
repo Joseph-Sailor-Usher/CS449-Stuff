@@ -3,9 +3,8 @@ from game import Game
 from SOSGameUI import SOSGameUI
 
 def main():
-    root = tk.Tk()
-    game = Game(3, 'simple', 'human', 'ai')
-    app = SOSGameUI(root, game)
+    game = Game(3, 'simple', "human", "human")
+    app = SOSGameUI(game)
     app.mainloop()
 
 if __name__ == "__main__":
