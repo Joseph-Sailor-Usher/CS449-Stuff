@@ -36,5 +36,7 @@ class Game:
     def make_move(self, row, col):
         current_player = self.get_current_player()
         if self.board.is_valid_move(row, col):
-            self.switch_turn()
             self.board.place_move(row, col, current_player.letter)
+            self.switch_turn()
+            return True
+        return False

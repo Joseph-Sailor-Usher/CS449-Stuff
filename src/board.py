@@ -12,6 +12,7 @@ class Board:
             return True
         return False
 
+
     def __str__(self):
         board_str = []
         for row in self.board:
@@ -20,14 +21,14 @@ class Board:
         return '\n'.join(board_str)
     
     def set_value(self, row, col, value):
-        self.cells[row][col] = value
+        self.board[row][col] = value
 
     def get_value(self, row, col):
-        return self.cells[row][col]
+        return self.board[row][col]
 
     def is_full(self):
         for row in range(self.size):
             for col in range(self.size):
-                if self.cells[row][col] == ' ':
+                if self.board[row][col] == '':
                     return False
         return True

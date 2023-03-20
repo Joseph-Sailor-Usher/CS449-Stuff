@@ -65,14 +65,9 @@ class SOSGameUI(tk.Tk):
     def button_click(self, row, col):
         current_player = self.game.get_current_player()
         if self.game.make_move(row, col):
-            board_value = self.game.board.get_value(row, col)
             button = self.frame.grid_slaves(row=row, column=col)[0]
-            button.config(text=board_value)
-            if self.game.is_finished():
-                self.status_label.config(text=f"{current_player.player_type} player {current_player.player_id} wins!")
-            else:
-                self.game.switch_turn()
-            self.status_label.config(text=f"{self.game.get_current_player().player_type} player {self.game.get_current_player().player_id}'s turn")
+            button.config(text=current_player.letter)
+            print(f"Active player's letter: {self.game.get_current_player().letter}")
 
     def update_window_size(self):
         padding = 50
