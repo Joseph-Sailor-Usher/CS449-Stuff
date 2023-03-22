@@ -4,5 +4,5 @@ class Player:
         self.player_type = player_type
         self.letter = letter
 
-    def make_move(self, board):
+    def get_move(self, board):
         pass
